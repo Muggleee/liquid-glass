@@ -106,7 +106,63 @@
           :value="shadowBlur"
           @input="$emit('update:shadowBlur', parseFloat($event.target.value))"
           min="0.01"
-          max="0.1"
+          max="0.5"
+          step="0.01"
+        />
+      </label>
+    </div>
+
+    <div class="control-group">
+      <label>
+        Highlight Intensity: <span class="value">{{ highlightIntensity.toFixed(2) }}</span>
+        <input
+          type="range"
+          :value="highlightIntensity"
+          @input="$emit('update:highlightIntensity', parseFloat($event.target.value))"
+          min="0.0"
+          max="1.0"
+          step="0.05"
+        />
+      </label>
+    </div>
+
+    <div class="control-group">
+      <label>
+        Highlight Size: <span class="value">{{ highlightSize.toFixed(2) }}</span>
+        <input
+          type="range"
+          :value="highlightSize"
+          @input="$emit('update:highlightSize', parseFloat($event.target.value))"
+          min="0.1"
+          max="2"
+          step="0.05"
+        />
+      </label>
+    </div>
+
+    <div class="control-group">
+      <label>
+        Highlight Offset X: <span class="value">{{ highlightOffsetX.toFixed(2) }}</span>
+        <input
+          type="range"
+          :value="highlightOffsetX"
+          @input="$emit('update:highlightOffsetX', parseFloat($event.target.value))"
+          min="-0.2"
+          max="0.2"
+          step="0.01"
+        />
+      </label>
+    </div>
+
+    <div class="control-group">
+      <label>
+        Highlight Offset Y: <span class="value">{{ highlightOffsetY.toFixed(2) }}</span>
+        <input
+          type="range"
+          :value="highlightOffsetY"
+          @input="$emit('update:highlightOffsetY', parseFloat($event.target.value))"
+          min="-0.2"
+          max="0.2"
           step="0.01"
         />
       </label>
@@ -135,7 +191,11 @@ defineProps({
   shadowIntensity: { type: Number, default: 0.2 },
   shadowOffsetX: { type: Number, default: 0 },
   shadowOffsetY: { type: Number, default: 0.03 },
-  shadowBlur: { type: Number, default: 0.1 }
+  shadowBlur: { type: Number, default: 0.1 },
+  highlightIntensity: { type: Number, default: 0.6 },
+  highlightSize: { type: Number, default: 0.3 },
+  highlightOffsetX: { type: Number, default: -0.05 },
+  highlightOffsetY: { type: Number, default: -0.05 }
 })
 
 const emit = defineEmits([
@@ -147,6 +207,10 @@ const emit = defineEmits([
   'update:shadowOffsetX',
   'update:shadowOffsetY',
   'update:shadowBlur',
+  'update:highlightIntensity',
+  'update:highlightSize',
+  'update:highlightOffsetX',
+  'update:highlightOffsetY',
   'upload-background'
 ])
 

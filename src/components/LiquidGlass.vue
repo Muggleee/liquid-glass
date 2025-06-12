@@ -10,6 +10,10 @@
       v-model:shadowOffsetX="params.shadowOffsetX"
       v-model:shadowOffsetY="params.shadowOffsetY"
       v-model:shadowBlur="params.shadowBlur"
+      v-model:highlightIntensity="params.highlightIntensity"
+      v-model:highlightSize="params.highlightSize"
+      v-model:highlightOffsetX="params.highlightOffsetX"
+      v-model:highlightOffsetY="params.highlightOffsetY"
       @upload-background="handleBackgroundUpload"
     />
   </div>
@@ -39,13 +43,17 @@ let animationId = null
 // Reactive parameters
 const params = reactive({
   radius: 0.4,
-  distort: 3.0,
+  distort: 3.5,
   dispersion: 1.3,
   rotSpeed: 1.0,
   shadowIntensity: 0.3,
-  shadowOffsetX: 0,
+  shadowOffsetX: 0.01,
   shadowOffsetY: 0.08,
-  shadowBlur: 0.1
+  shadowBlur: 0.4,
+  highlightIntensity: 0.4,
+  highlightSize: 1.25,
+  highlightOffsetX: 0.01,
+  highlightOffsetY: 0.03
 })
 
 // Smooth mouse position
@@ -84,7 +92,8 @@ function initWebGL() {
     'uMVMatrix', 'uPMatrix', 'uTextureMatrix', 'uTexture', 'uMaskTexture',
     'uMousePos', 'uTMousePos', 'uResolution', 'uRadius', 'uDistort',
     'uDispersion', 'uRotSpeed', 'uShadowIntensity', 'uShadowOffsetX',
-    'uShadowOffsetY', 'uShadowBlur'
+    'uShadowOffsetY', 'uShadowBlur', 'uHighlightIntensity', 'uHighlightSize',
+    'uHighlightOffsetX', 'uHighlightOffsetY'
   ]
   
   uniformNames.forEach(name => {
@@ -177,6 +186,10 @@ function updateUniforms() {
   gl.uniform1f(uniforms.uShadowOffsetX, params.shadowOffsetX)
   gl.uniform1f(uniforms.uShadowOffsetY, params.shadowOffsetY)
   gl.uniform1f(uniforms.uShadowBlur, params.shadowBlur)
+  gl.uniform1f(uniforms.uHighlightIntensity, params.highlightIntensity)
+  gl.uniform1f(uniforms.uHighlightSize, params.highlightSize)
+  gl.uniform1f(uniforms.uHighlightOffsetX, params.highlightOffsetX)
+  gl.uniform1f(uniforms.uHighlightOffsetY, params.highlightOffsetY)
 }
 
 function render() {

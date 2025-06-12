@@ -16,6 +16,10 @@ uniform float uShadowIntensity;
 uniform float uShadowOffsetX;
 uniform float uShadowOffsetY;
 uniform float uShadowBlur;
+uniform float uHighlightIntensity;
+uniform float uHighlightSize;
+uniform float uHighlightOffsetX;
+uniform float uHighlightOffsetY;
 
 out vec4 fragColor;
 
@@ -65,6 +69,37 @@ float getShadow(vec2 uv, vec2 lightPos) {
   return shadow * uShadowIntensity * attenuation;
 }
 
+// Calculate highlight effect
+float getHighlight(vec2 uv, vec2 lightPos) {
+  // Use independent X and Y offsets for highlight
+  vec2 highlightOffset = vec2(uHighlightOffsetX, uHighlightOffsetY);
+  vec2 highlightPos = uv - lightPos + highlightOffset;
+  
+  // Calculate distance field for highlight area
+  vec2 asp = vec2(uResolution.x / uResolution.y, 1.0);
+  vec2 st = highlightPos * asp;
+  st *= 1.0 / (0.4920 + 0.2);
+  st = rot(-uRotSpeed * 2.0 * PI) * st;
+  
+  // Create smaller highlight circle
+  float highlightRadius = uRadius * uHighlightSize;
+  float highlightDist = sdCircle(st, highlightRadius);
+  
+  // Create soft highlight with smooth edges
+  float highlight = 1.0 - smoothstep(-0.02, 0.02, highlightDist);
+  
+  // Add falloff from center for more realistic glass highlight
+  float centerDist = length(st);
+  float centerFalloff = 1.0 - smoothstep(0.0, highlightRadius * 0.8, centerDist);
+  highlight *= centerFalloff;
+  
+  // Distance attenuation
+  float distanceFromLight = length(uv - lightPos);
+  float attenuation = 1.0 - smoothstep(0.0, 1.0, distanceFromLight);
+  
+  return highlight * uHighlightIntensity * attenuation;
+}
+
 vec4 refrakt(float sd, vec2 st, vec4 bg, vec2 originalUV) {
   vec2 offset = mix(vec2(0), normalize(st) / sd, length(st));
   float disp = uDispersion * 0.01;
@@ -109,7 +144,26 @@ void main() {
   st *= vec2(uResolution.x / uResolution.y, 1.0);
   st *= 1.0 / (0.4920 + 0.2);
   st = rot(-uRotSpeed * 2.0 * PI) * st;
+  
   vec4 color = getEffect(st, bg, uv);
+  
+  // Add realistic highlight effect - simulate exposure increase instead of adding white
+  float highlight = getHighlight(uv, uMousePos);
+  
+  // Method 1: Exposure-based highlight (preserves color ratios)
+  float exposure = 1.0 + highlight * 2.5; // Increase exposure in highlight areas
+  vec3 exposedColor = 1.0 - exp(-color.rgb * exposure);
+  
+  // Method 2: Brightness enhancement (alternative approach)
+  vec3 brightenedColor = color.rgb * (1.0 + highlight * 1.8);
+  
+  // Blend between exposure and brightness methods for best result
+  color.rgb = mix(exposedColor, brightenedColor, 0.3);
+  
+  // Add subtle warm tint to simulate realistic light reflection
+  vec3 warmTint = vec3(1.02, 1.01, 0.98); // Slightly warm
+  color.rgb *= mix(vec3(1.0), warmTint, highlight * 0.3);
+  
   vec4 m = texture(uMaskTexture, uv);
   fragColor = color * (m.a * m.a);
 }
