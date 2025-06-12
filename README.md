@@ -2,6 +2,8 @@
 
 [English](#english) | [中文](#中文)
 
+**🌐 Live Demo: [http://liquid-glass.liziyang.design](http://liquid-glass.liziyang.design)**
+
 ---
 
 ## English
@@ -141,6 +143,8 @@ Issues and Pull Requests are welcome!
 ---
 
 ## 中文
+
+**🌐 在线演示: [http://liquid-glass.liziyang.design](http://liquid-glass.liziyang.design)**
 
 一个基于 Vue3 + Vite 的 WebGL 液体玻璃折射特效项目。
 
