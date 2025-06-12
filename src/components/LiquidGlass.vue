@@ -38,13 +38,13 @@ let animationId = null
 
 // Reactive parameters
 const params = reactive({
-  radius: 0.3,
+  radius: 0.4,
   distort: 3.0,
   dispersion: 1.3,
   rotSpeed: 1.0,
   shadowIntensity: 0.3,
   shadowOffsetX: 0,
-  shadowOffsetY: 0.05,
+  shadowOffsetY: 0.08,
   shadowBlur: 0.1
 })
 
