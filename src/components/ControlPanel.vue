@@ -228,13 +228,13 @@ function handleFileUpload(event) {
   top: 10px;
   left: 10px;
   background: rgba(255, 255, 255, 0.9);
-  padding: 20px;
+  padding: 16px;
   border-radius: 12px;
   font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', 'Roboto', sans-serif;
-  font-size: 14px;
+  font-size: 13px;
   box-shadow: 0 4px 20px rgba(0, 0, 0, 0.1);
   backdrop-filter: blur(10px);
-  min-width: 250px;
+  width: 280px;
   max-height: 80vh;
   overflow-y: auto;
 }
