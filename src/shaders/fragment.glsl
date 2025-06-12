@@ -8,6 +8,7 @@ uniform sampler2D uMaskTexture;
 uniform vec2 uMousePos;
 uniform vec2 uTMousePos;
 uniform vec2 uResolution;
+uniform vec2 uTextureResolution;
 uniform float uRadius;
 uniform float uDistort;
 uniform float uDispersion;
@@ -28,6 +29,32 @@ const float PI = 3.14159265359;
 mat2 rot(float a) { 
   float c = cos(a), s = sin(a); 
   return mat2(c, -s, s, c); 
+}
+
+// Transform UV coordinates to maintain aspect ratio
+vec2 getAspectCorrectedUV(vec2 uv) {
+  // Calculate aspect ratios
+  float textureAspect = uTextureResolution.x / uTextureResolution.y;
+  float screenAspect = uResolution.x / uResolution.y;
+  
+  // Calculate scale factors for both dimensions
+  vec2 scale = vec2(1.0);
+  
+  if (textureAspect > screenAspect) {
+    // Texture is wider - scale down horizontally to fit
+    scale.x = screenAspect / textureAspect;
+  } else {
+    // Texture is taller - scale down vertically to fit
+    scale.y = textureAspect / screenAspect;
+  }
+  
+  // Apply scaling and center the image
+  vec2 correctedUV = (uv - 0.5) * scale + 0.5;
+  
+  // Clamp to avoid sampling outside texture bounds
+  correctedUV = clamp(correctedUV, 0.0, 1.0);
+  
+  return correctedUV;
 }
 
 float sdCircle(vec2 uv, float r) { 
@@ -106,7 +133,8 @@ vec4 refrakt(float sd, vec2 st, vec4 bg, vec2 originalUV) {
   
   // Apply shadow to refracted coordinates as well
   vec2 refractedUV = originalUV + offset * disp;
-  vec4 originalBg = texture(uTexture, refractedUV);
+  vec2 aspectCorrectedRefractedUV = getAspectCorrectedUV(refractedUV);
+  vec4 originalBg = texture(uTexture, aspectCorrectedRefractedUV);
   float shadow = getShadow(refractedUV, uMousePos);
   vec3 shadowColor = vec3(0.0, 0.0, 0.0); // Black shadow
   originalBg.rgb = mix(originalBg.rgb, shadowColor, shadow);
@@ -133,7 +161,8 @@ vec4 getEffect(vec2 st, vec4 bg, vec2 originalUV) {
 
 void main() {
   vec2 uv = vTextureCoord;
-  vec4 bg = texture(uTexture, uv);
+  vec2 aspectCorrectedUV = getAspectCorrectedUV(uv);
+  vec4 bg = texture(uTexture, aspectCorrectedUV);
   
   // Calculate shadow and apply to background
   float shadow = getShadow(uv, uMousePos);

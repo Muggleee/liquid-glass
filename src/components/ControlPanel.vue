@@ -267,6 +267,7 @@ input[type="range"] {
   background: #ddd;
   outline: none;
   -webkit-appearance: none;
+  appearance: none;
   margin-top: 8px;
 }
 

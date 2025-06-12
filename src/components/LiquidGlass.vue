@@ -53,6 +53,7 @@ let program = null
 let uniforms = {}
 let vao = null
 let animationId = null
+let textureResolution = { width: 512, height: 512 } // Default texture resolution
 
 // Reactive parameters
 const params = reactive({
@@ -101,10 +102,9 @@ function initWebGL() {
 
   gl.useProgram(program)
 
- 
   const uniformNames = [
     'uMVMatrix', 'uPMatrix', 'uTextureMatrix', 'uTexture', 'uMaskTexture',
-    'uMousePos', 'uTMousePos', 'uResolution', 'uRadius', 'uDistort',
+    'uMousePos', 'uTMousePos', 'uResolution', 'uTextureResolution', 'uRadius', 'uDistort',
     'uDispersion', 'uRotSpeed', 'uShadowIntensity', 'uShadowOffsetX',
     'uShadowOffsetY', 'uShadowBlur', 'uHighlightIntensity', 'uHighlightSize',
     'uHighlightOffsetX', 'uHighlightOffsetY'
@@ -128,7 +128,6 @@ function initWebGL() {
   gl.uniform1i(uniforms.uTexture, 0)
   gl.uniform1i(uniforms.uMaskTexture, 1)
 
-  
   setupGeometry()
   setupTextures()
   handleResize()
@@ -184,7 +183,14 @@ function handleBackgroundUpload(file) {
   
   const img = new Image()
   img.onload = () => {
+    // Update texture resolution
+    textureResolution.width = img.width
+    textureResolution.height = img.height
+    
     createTexture(gl, 0, img)
+    
+    // Clean up the object URL
+    URL.revokeObjectURL(img.src)
   }
   img.src = URL.createObjectURL(file)
 }
@@ -218,6 +224,7 @@ function render() {
 
   // Update uniforms
   gl.uniform2fv(uniforms.uResolution, [canvasRef.value.width, canvasRef.value.height])
+  gl.uniform2fv(uniforms.uTextureResolution, [textureResolution.width, textureResolution.height])
   gl.uniform2fv(uniforms.uMousePos, [mouse.x, mouse.y])
   gl.uniform2fv(uniforms.uTMousePos, [targetMouse.x, targetMouse.y])
 
