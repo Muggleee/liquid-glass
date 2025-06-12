@@ -2,7 +2,6 @@
   <div class="liquid-glass">
     <canvas ref="canvasRef" class="gl-canvas"></canvas>
     
-    <!-- GitHub Link -->
     <a 
       href="https://github.com/Muggleee/liquid-glass-vue" 
       target="_blank" 
@@ -222,7 +221,6 @@ function render() {
   // Clear canvas
   gl.clear(gl.COLOR_BUFFER_BIT)
 
-  // Update uniforms
   gl.uniform2fv(uniforms.uResolution, [canvasRef.value.width, canvasRef.value.height])
   gl.uniform2fv(uniforms.uTextureResolution, [textureResolution.width, textureResolution.height])
   gl.uniform2fv(uniforms.uMousePos, [mouse.x, mouse.y])

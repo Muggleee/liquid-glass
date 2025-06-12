@@ -31,28 +31,23 @@ mat2 rot(float a) {
   return mat2(c, -s, s, c); 
 }
 
-// Transform UV coordinates to maintain aspect ratio
+// Transform UV coordinates to maintain aspect ratio - contain mode (show complete image)
 vec2 getAspectCorrectedUV(vec2 uv) {
-  // Calculate aspect ratios
+
   float textureAspect = uTextureResolution.x / uTextureResolution.y;
   float screenAspect = uResolution.x / uResolution.y;
   
-  // Calculate scale factors for both dimensions
   vec2 scale = vec2(1.0);
   
   if (textureAspect > screenAspect) {
-    // Texture is wider - scale down horizontally to fit
-    scale.x = screenAspect / textureAspect;
-  } else {
-    // Texture is taller - scale down vertically to fit
+
     scale.y = textureAspect / screenAspect;
+  } else {
+
+    scale.x = screenAspect / textureAspect;
   }
   
-  // Apply scaling and center the image
   vec2 correctedUV = (uv - 0.5) * scale + 0.5;
-  
-  // Clamp to avoid sampling outside texture bounds
-  correctedUV = clamp(correctedUV, 0.0, 1.0);
   
   return correctedUV;
 }
@@ -74,11 +69,10 @@ float getDist(vec2 uv) {
 
 // Calculate shadow
 float getShadow(vec2 uv, vec2 lightPos) {
-  // Use independent X and Y offsets
+
   vec2 shadowOffset = vec2(uShadowOffsetX, uShadowOffsetY);
   vec2 shadowPos = uv - lightPos + shadowOffset;
   
-  // Calculate distance field for shadow area
   vec2 asp = vec2(uResolution.x / uResolution.y, 1.0);
   vec2 st = shadowPos * asp;
   st *= 1.0 / (0.4920 + 0.2);
@@ -86,10 +80,8 @@ float getShadow(vec2 uv, vec2 lightPos) {
   
   float shadowDist = getDist(st);
   
-  // Create soft shadow with blurred edges
   float shadow = 1.0 - smoothstep(-uShadowBlur, uShadowBlur, shadowDist);
   
-  // Shadow attenuation (farther from light source, fainter shadow)
   float distanceFromLight = length(uv - lightPos);
   float attenuation = 1.0 - smoothstep(0.0, 1.0, distanceFromLight);
   
@@ -98,7 +90,6 @@ float getShadow(vec2 uv, vec2 lightPos) {
 
 // Calculate highlight effect
 float getHighlight(vec2 uv, vec2 lightPos) {
-  // Use independent X and Y offsets for highlight
   vec2 highlightOffset = vec2(uHighlightOffsetX, uHighlightOffsetY);
   vec2 highlightPos = uv - lightPos + highlightOffset;
   
@@ -108,14 +99,12 @@ float getHighlight(vec2 uv, vec2 lightPos) {
   st *= 1.0 / (0.4920 + 0.2);
   st = rot(-uRotSpeed * 2.0 * PI) * st;
   
-  // Create smaller highlight circle
+
   float highlightRadius = uRadius * uHighlightSize;
   float highlightDist = sdCircle(st, highlightRadius);
   
-  // Create soft highlight with smooth edges
   float highlight = 1.0 - smoothstep(-0.02, 0.02, highlightDist);
   
-  // Add falloff from center for more realistic glass highlight
   float centerDist = length(st);
   float centerFalloff = 1.0 - smoothstep(0.0, highlightRadius * 0.8, centerDist);
   highlight *= centerFalloff;
@@ -166,7 +155,7 @@ void main() {
   
   // Calculate shadow and apply to background
   float shadow = getShadow(uv, uMousePos);
-  vec3 shadowColor = vec3(0.0, 0.0, 0.0); // Black shadow
+  vec3 shadowColor = vec3(0.0, 0.0, 0.0); 
   bg.rgb = mix(bg.rgb, shadowColor, shadow);
   
   vec2 st = uv - uMousePos;
@@ -176,21 +165,17 @@ void main() {
   
   vec4 color = getEffect(st, bg, uv);
   
-  // Add realistic highlight effect - simulate exposure increase instead of adding white
   float highlight = getHighlight(uv, uMousePos);
   
-  // Method 1: Exposure-based highlight (preserves color ratios)
-  float exposure = 1.0 + highlight * 2.5; // Increase exposure in highlight areas
+  float exposure = 1.0 + highlight * 2.5; 
   vec3 exposedColor = 1.0 - exp(-color.rgb * exposure);
   
-  // Method 2: Brightness enhancement (alternative approach)
   vec3 brightenedColor = color.rgb * (1.0 + highlight * 1.8);
   
-  // Blend between exposure and brightness methods for best result
   color.rgb = mix(exposedColor, brightenedColor, 0.3);
   
-  // Add subtle warm tint to simulate realistic light reflection
-  vec3 warmTint = vec3(1.02, 1.01, 0.98); // Slightly warm
+
+  vec3 warmTint = vec3(1.02, 1.01, 0.98); 
   color.rgb *= mix(vec3(1.0), warmTint, highlight * 0.3);
   
   vec4 m = texture(uMaskTexture, uv);
