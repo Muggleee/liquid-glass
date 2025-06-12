@@ -36,45 +36,45 @@ let uniforms = {}
 let vao = null
 let animationId = null
 
-// 响应式参数
+// Reactive parameters
 const params = reactive({
   radius: 0.3,
-  distort: 4.0,
+  distort: 3.0,
   dispersion: 1.3,
   rotSpeed: 1.0,
-  shadowIntensity: 0.5,
-  shadowOffsetX: 0.05,
-  shadowOffsetY: -0.03,
-  shadowBlur: 0.03
+  shadowIntensity: 0.3,
+  shadowOffsetX: 0,
+  shadowOffsetY: 0.05,
+  shadowBlur: 0.1
 })
 
-// 平滑鼠标位置
+// Smooth mouse position
 const mouse = reactive({ x: 0.5, y: 0.5 })
-// 真实鼠标位置
+// Actual mouse position
 const targetMouse = reactive({ x: 0.5, y: 0.5 })
 const smoothing = 0.05
 
-// 初始化WebGL
+// Initialize WebGL
 function initWebGL() {
   const canvas = canvasRef.value
   gl = canvas.getContext('webgl2')
   
   if (!gl) {
-    throw new Error('不支持 WebGL2')
+    throw new Error('WebGL2 not supported')
   }
 
-  // 编译着色器
+  // Compile shaders
   const vertexShader = compileShader(gl, vertexShaderSource, gl.VERTEX_SHADER)
   const fragmentShader = compileShader(gl, fragmentShaderSource, gl.FRAGMENT_SHADER)
   
   if (!vertexShader || !fragmentShader) {
-    throw new Error('着色器编译失败')
+    throw new Error('Shader compilation failed')
   }
 
-  // 创建程序
+  // Create program
   program = createProgram(gl, vertexShader, fragmentShader)
   if (!program) {
-    throw new Error('程序链接失败')
+    throw new Error('Program linking failed')
   }
 
   gl.useProgram(program)
@@ -91,7 +91,7 @@ function initWebGL() {
     uniforms[name] = gl.getUniformLocation(program, name)
   })
 
-  // 设置矩阵
+  // Setup matrices
   const identityMatrix = new Float32Array([
     1, 0, 0, 0,
     0, 1, 0, 0,
@@ -137,11 +137,11 @@ function setupGeometry() {
 }
 
 function setupTextures() {
-  // 创建背景纹理
+  // Create background texture
   const bgCanvas = createGradientCanvas()
   createTexture(gl, 0, bgCanvas)
 
-  // 创建遮罩纹理
+  // Create mask texture
   const maskCanvas = createMaskCanvas()
   createTexture(gl, 1, maskCanvas)
 }
@@ -182,28 +182,28 @@ function updateUniforms() {
 function render() {
   if (!gl || !program) return
 
-  // 平滑鼠标移动
+  // Smooth mouse movement
   mouse.x += (targetMouse.x - mouse.x) * smoothing
   mouse.y += (targetMouse.y - mouse.y) * smoothing
 
-  // 清除画布
+  // Clear canvas
   gl.clear(gl.COLOR_BUFFER_BIT)
 
-  // 更新uniforms
+  // Update uniforms
   gl.uniform2fv(uniforms.uResolution, [canvasRef.value.width, canvasRef.value.height])
   gl.uniform2fv(uniforms.uMousePos, [mouse.x, mouse.y])
   gl.uniform2fv(uniforms.uTMousePos, [targetMouse.x, targetMouse.y])
 
   updateUniforms()
 
-  // 绘制
+  // Draw
   gl.bindVertexArray(vao)
   gl.drawArrays(gl.TRIANGLE_STRIP, 0, 4)
 
   animationId = requestAnimationFrame(render)
 }
 
-// 监听参数变化
+// Watch parameter changes
 watch(params, updateUniforms, { deep: true })
 
 onMounted(() => {
@@ -213,7 +213,7 @@ onMounted(() => {
     window.addEventListener('mousemove', handleMouseMove)
     render()
   } catch (error) {
-    console.error('WebGL初始化失败:', error)
+    console.error('WebGL initialization failed:', error)
   }
 })
 

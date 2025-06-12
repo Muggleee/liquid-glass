@@ -2,7 +2,7 @@
   <div class="control-panel">
     <div class="control-group">
       <label>
-        圆半径：<span class="value">{{ radius.toFixed(2) }}</span>
+        Circle Radius: <span class="value">{{ radius.toFixed(2) }}</span>
         <input
           type="range"
           :value="radius"
@@ -16,7 +16,7 @@
 
     <div class="control-group">
       <label>
-        扭曲强度：<span class="value">{{ distort.toFixed(2) }}</span>
+        Distortion Strength: <span class="value">{{ distort.toFixed(2) }}</span>
         <input
           type="range"
           :value="distort"
@@ -30,7 +30,7 @@
 
     <div class="control-group">
       <label>
-        折射强度：<span class="value">{{ dispersion.toFixed(2) }}</span>
+        Refraction Strength: <span class="value">{{ dispersion.toFixed(2) }}</span>
         <input
           type="range"
           :value="dispersion"
@@ -42,9 +42,9 @@
       </label>
     </div>
 
-    <div class="control-group">
+    <!-- <div class="control-group">
       <label>
-        旋转速度：<span class="value">{{ rotSpeed.toFixed(2) }}</span>
+        Rotation Speed: <span class="value">{{ rotSpeed.toFixed(2) }}</span>
         <input
           type="range"
           :value="rotSpeed"
@@ -54,11 +54,11 @@
           step="0.01"
         />
       </label>
-    </div>
+    </div> -->
 
     <div class="control-group">
       <label>
-        投影强度：<span class="value">{{ shadowIntensity.toFixed(2) }}</span>
+        Shadow Intensity: <span class="value">{{ shadowIntensity.toFixed(2) }}</span>
         <input
           type="range"
           :value="shadowIntensity"
@@ -72,7 +72,7 @@
 
     <div class="control-group">
       <label>
-        投影偏移X：<span class="value">{{ shadowOffsetX.toFixed(2) }}</span>
+        Shadow Offset X: <span class="value">{{ shadowOffsetX.toFixed(2) }}</span>
         <input
           type="range"
           :value="shadowOffsetX"
@@ -86,7 +86,7 @@
 
     <div class="control-group">
       <label>
-        投影偏移Y：<span class="value">{{ shadowOffsetY.toFixed(2) }}</span>
+        Shadow Offset Y: <span class="value">{{ shadowOffsetY.toFixed(2) }}</span>
         <input
           type="range"
           :value="shadowOffsetY"
@@ -100,7 +100,7 @@
 
     <div class="control-group">
       <label>
-        投影模糊：<span class="value">{{ shadowBlur.toFixed(2) }}</span>
+        Shadow Blur: <span class="value">{{ shadowBlur.toFixed(2) }}</span>
         <input
           type="range"
           :value="shadowBlur"
@@ -114,7 +114,7 @@
 
     <div class="control-group">
       <label>
-        上传背景图：
+        Upload Background:
         <input
           type="file"
           accept="image/*"
@@ -129,13 +129,13 @@
 <script setup>
 defineProps({
   radius: { type: Number, default: 0.3 },
-  distort: { type: Number, default: 4.0 },
+  distort: { type: Number, default: 3.0 },
   dispersion: { type: Number, default: 1.3 },
   rotSpeed: { type: Number, default: 1.0 },
-  shadowIntensity: { type: Number, default: 0.5 },
-  shadowOffsetX: { type: Number, default: 0.05 },
-  shadowOffsetY: { type: Number, default: -0.03 },
-  shadowBlur: { type: Number, default: 0.03 }
+  shadowIntensity: { type: Number, default: 0.2 },
+  shadowOffsetX: { type: Number, default: 0 },
+  shadowOffsetY: { type: Number, default: 0.03 },
+  shadowBlur: { type: Number, default: 0.1 }
 })
 
 const emit = defineEmits([
@@ -242,7 +242,7 @@ input[type="range"]::-moz-range-thumb {
   background: #f0f8ff;
 }
 
-/* 响应式设计 */
+/* Responsive design */
 @media (max-width: 768px) {
   .control-panel {
     position: fixed;

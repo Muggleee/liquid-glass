@@ -1,6 +1,7 @@
 {
   "name": "liquid-glass-vue",
   "version": "0.0.0",
+  "description": "A WebGL liquid glass refraction effect project based on Vue3 + Vite",
   "private": true,
   "scripts": {
     "build": "vite build",

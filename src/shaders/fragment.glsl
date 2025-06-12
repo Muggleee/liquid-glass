@@ -41,13 +41,13 @@ float getDist(vec2 uv) {
   return sd - tweak;
 }
 
-// 计算投影
+// Calculate shadow
 float getShadow(vec2 uv, vec2 lightPos) {
-  // 使用独立的X和Y偏移
+  // Use independent X and Y offsets
   vec2 shadowOffset = vec2(uShadowOffsetX, uShadowOffsetY);
   vec2 shadowPos = uv - lightPos + shadowOffset;
   
-  // 计算投影区域的距离场
+  // Calculate distance field for shadow area
   vec2 asp = vec2(uResolution.x / uResolution.y, 1.0);
   vec2 st = shadowPos * asp;
   st *= 1.0 / (0.4920 + 0.2);
@@ -55,10 +55,10 @@ float getShadow(vec2 uv, vec2 lightPos) {
   
   float shadowDist = getDist(st);
   
-  // 使用模糊边缘创建柔和投影
+  // Create soft shadow with blurred edges
   float shadow = 1.0 - smoothstep(-uShadowBlur, uShadowBlur, shadowDist);
   
-  // 投影衰减（距离光源越远投影越淡）
+  // Shadow attenuation (farther from light source, fainter shadow)
   float distanceFromLight = length(uv - lightPos);
   float attenuation = 1.0 - smoothstep(0.0, 1.0, distanceFromLight);
   
@@ -69,11 +69,11 @@ vec4 refrakt(float sd, vec2 st, vec4 bg, vec2 originalUV) {
   vec2 offset = mix(vec2(0), normalize(st) / sd, length(st));
   float disp = uDispersion * 0.01;
   
-  // 对折射后的坐标也应用投影
+  // Apply shadow to refracted coordinates as well
   vec2 refractedUV = originalUV + offset * disp;
   vec4 originalBg = texture(uTexture, refractedUV);
   float shadow = getShadow(refractedUV, uMousePos);
-  vec3 shadowColor = vec3(0.0, 0.0, 0.0);
+  vec3 shadowColor = vec3(0.0, 0.0, 0.0); // Black shadow
   originalBg.rgb = mix(originalBg.rgb, shadowColor, shadow);
   
   vec4 r;
@@ -100,9 +100,9 @@ void main() {
   vec2 uv = vTextureCoord;
   vec4 bg = texture(uTexture, uv);
   
-  // 计算投影并应用到背景
+  // Calculate shadow and apply to background
   float shadow = getShadow(uv, uMousePos);
-  vec3 shadowColor = vec3(0.0, 0.0, 0.0); // 黑色投影
+  vec3 shadowColor = vec3(0.0, 0.0, 0.0); // Black shadow
   bg.rgb = mix(bg.rgb, shadowColor, shadow);
   
   vec2 st = uv - uMousePos;
