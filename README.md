@@ -10,14 +10,6 @@
 
 A WebGL liquid glass refraction effect project based on Vue3 + Vite.
 
-### Features
-
-- 🌟 **Real-time Refraction Effects** - Liquid glass effects implemented using WebGL2 and SDF technology
-- 🎮 **Interactive Controls** - Real-time adjustment of refraction parameters and visual effects
-- 📱 **Responsive Design** - Support for desktop and mobile devices
-- 🖼️ **Custom Backgrounds** - Support for uploading custom background images
-- ⚡ **High Performance Rendering** - Smooth 60fps animations
-
 ### Tech Stack
 
 - **Vue 3** - Modern frontend framework
@@ -54,37 +46,6 @@ npm run build
 npm run preview
 ```
 
-### Project Structure
-
-```
-liquid-glass-vue/
-├── src/
-│   ├── components/          # Vue components
-│   │   ├── LiquidGlass.vue  # Main WebGL component
-│   │   └── ControlPanel.vue # Control panel component
-│   ├── shaders/             # GLSL shader files
-│   │   ├── vertex.glsl      # Vertex shader
-│   │   └── fragment.glsl    # Fragment shader
-│   ├── utils/               # Utility functions
-│   │   └── webgl.js         # WebGL related utilities
-│   ├── App.vue              # Root component
-│   ├── main.js              # Entry file
-│   └── style.css            # Global styles
-├── index.html               # HTML template
-├── vite.config.js           # Vite configuration
-└── package.json             # Project configuration
-```
-
-### Control Parameters
-
-- **Circle Radius** - Controls the size of the refraction area
-- **Distortion Strength** - Adjusts the degree of deformation
-- **Refraction Strength** - Controls the degree of light deflection
-- **Rotation Speed** - Dynamic rotation effect speed
-- **Shadow Strength** - Intensity of the shadow
-- **Shadow Offset** - Position offset of the shadow
-- **Shadow Blur** - Blur degree of shadow edges
-
 ### Core Technologies
 
 #### SDF (Signed Distance Field)
@@ -118,14 +79,6 @@ Implements complete shadow casting including distance attenuation and soft edges
 
 Requires modern browsers with WebGL2 support.
 
-### Development Notes
-
-#### Adding New Shader Effects
-
-1. Create new `.glsl` files in the `src/shaders/` directory
-2. Import and use them in `LiquidGlass.vue`
-3. Add corresponding control parameters in `ControlPanel.vue`
-
 #### Performance Optimization
 
 - Shader code has been optimized to avoid expensive calculations
@@ -151,10 +104,6 @@ Issues and Pull Requests are welcome!
 ### 项目特性
 
 - 🌟 **实时折射特效** - 使用 WebGL2 和 SDF 技术实现的液体玻璃效果
-- 🎮 **交互式控制** - 实时调节折射参数和视觉效果
-- 📱 **响应式设计** - 支持桌面和移动设备
-- 🖼️ **自定义背景** - 支持上传自定义背景图片
-- ⚡ **高性能渲染** - 60fps 流畅动画
 
 ### 技术栈
 
@@ -192,37 +141,6 @@ npm run build
 npm run preview
 ```
 
-### 项目结构
-
-```
-liquid-glass-vue/
-├── src/
-│   ├── components/          # Vue 组件
-│   │   ├── LiquidGlass.vue  # 主要的 WebGL 组件
-│   │   └── ControlPanel.vue # 控制面板组件
-│   ├── shaders/             # GLSL 着色器文件
-│   │   ├── vertex.glsl      # 顶点着色器
-│   │   └── fragment.glsl    # 片段着色器
-│   ├── utils/               # 工具函数
-│   │   └── webgl.js         # WebGL 相关工具
-│   ├── App.vue              # 根组件
-│   ├── main.js              # 入口文件
-│   └── style.css            # 全局样式
-├── index.html               # HTML 模板
-├── vite.config.js           # Vite 配置
-└── package.json             # 项目配置
-```
-
-### 控制参数
-
-- **圆半径** - 控制折射区域的大小
-- **扭曲强度** - 调节形变程度
-- **折射强度** - 控制光线偏折程度
-- **旋转速度** - 动态旋转效果速度
-- **投影强度** - 阴影的强度
-- **投影偏移** - 阴影的位置偏移
-- **投影模糊** - 阴影边缘的模糊程度
-
 ### 核心技术
 
 #### SDF (有向距离场)
@@ -255,14 +173,6 @@ vec2 offset = mix(vec2(0), normalize(st)/sd, length(st));
 - Edge 79+
 
 需要支持 WebGL2 的现代浏览器。
-
-### 开发说明
-
-#### 添加新的着色器效果
-
-1. 在 `src/shaders/` 目录下创建新的 `.glsl` 文件
-2. 在 `LiquidGlass.vue` 中导入并使用
-3. 在 `ControlPanel.vue` 中添加相应的控制参数
 
 #### 性能优化
 
