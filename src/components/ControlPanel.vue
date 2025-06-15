@@ -30,13 +30,13 @@
 
     <div class="control-group">
       <label>
-        Refraction Strength: <span class="value">{{ dispersion.toFixed(2) }}</span>
+        Color Dispersion: <span class="value">{{ dispersion.toFixed(2) }}</span>
         <input
           type="range"
           :value="dispersion"
           @input="$emit('update:dispersion', parseFloat($event.target.value))"
           min="0.1"
-          max="2.0"
+          max="3.0"
           step="0.1"
         />
       </label>

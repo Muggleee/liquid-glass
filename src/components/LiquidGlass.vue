@@ -57,9 +57,9 @@ let textureResolution = { width: 512, height: 512 } // Default texture resolutio
 
 // Reactive parameters
 const params = reactive({
-  radius: 0.4,
-  distort: 2.5,
-  dispersion: 1.3,
+  radius: 0.3,
+  distort: 2.3,
+  dispersion: 0.7, 
   rotSpeed: 1.0,
   shadowIntensity: 0.3,
   shadowOffsetX: 0.01,
@@ -169,6 +169,7 @@ async function setupTextures() {
     textureResolution.height = bgImage.height || 512
   } catch (error) {
     console.error('Error loading default background:', error)
+    // Fallback to gradient if image loading fails
     const bgCanvas = createGradientCanvas()
     createTexture(gl, 0, bgCanvas)
   }

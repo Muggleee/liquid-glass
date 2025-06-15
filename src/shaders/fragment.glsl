@@ -131,30 +131,56 @@ vec4 refrakt(float sd, vec2 st, vec4 bg, vec2 originalUV) {
   vec2 offset = mix(vec2(0), normalize(st) / sd, length(st));
   float disp = uDispersion * 0.01;
   
-  // Apply shadow to refracted coordinates as well
-  vec2 refractedUV = originalUV + offset * disp;
-  bool isOutOfBounds;
-  vec2 aspectCorrectedRefractedUV = getAspectCorrectedUV(refractedUV, isOutOfBounds);
+  // Create different offsets for each color channel to simulate chromatic aberration
+  vec2 redOffset = offset * disp * 1.2; // Red shifts more
+  vec2 greenOffset = offset * disp * 1.0; // Green shifts standard amount
+  vec2 blueOffset = offset * disp * 0.8; // Blue shifts less
   
-  vec4 originalBg;
-  if (isOutOfBounds) {
-    // Use a neutral background color for out-of-bounds areas
-    originalBg = vec4(0.8, 0.8, 0.8, 1.0); // Light gray background
+  // Sample each color channel with different refraction amounts
+  bool isOutOfBoundsR, isOutOfBoundsG, isOutOfBoundsB;
+  
+  vec2 redUV = originalUV + redOffset;
+  vec2 greenUV = originalUV + greenOffset;
+  vec2 blueUV = originalUV + blueOffset;
+  
+  vec2 aspectCorrectedRedUV = getAspectCorrectedUV(redUV, isOutOfBoundsR);
+  vec2 aspectCorrectedGreenUV = getAspectCorrectedUV(greenUV, isOutOfBoundsG);
+  vec2 aspectCorrectedBlueUV = getAspectCorrectedUV(blueUV, isOutOfBoundsB);
+  
+  // Sample texture for each color channel
+  float r, g, b;
+  
+  if (isOutOfBoundsR) {
+    r = 0.8; // Light gray for out-of-bounds
   } else {
-    originalBg = texture(uTexture, aspectCorrectedRefractedUV);
+    r = texture(uTexture, aspectCorrectedRedUV).r;
   }
   
-  float shadow = getShadow(refractedUV, uMousePos);
-  vec3 shadowColor = vec3(0.0, 0.0, 0.0); // Black shadow
-  originalBg.rgb = mix(originalBg.rgb, shadowColor, shadow);
+  if (isOutOfBoundsG) {
+    g = 0.8; // Light gray for out-of-bounds
+  } else {
+    g = texture(uTexture, aspectCorrectedGreenUV).g;
+  }
   
-  vec4 r;
-  r.r = originalBg.r;
-  r.g = originalBg.g;
-  r.b = originalBg.b;
-  r.a = 1.0;
+  if (isOutOfBoundsB) {
+    b = 0.8; // Light gray for out-of-bounds
+  } else {
+    b = texture(uTexture, aspectCorrectedBlueUV).b;
+  }
+  
+  // Apply shadow to the average refracted position
+  vec2 avgUV = originalUV + offset * disp;
+  float shadow = getShadow(avgUV, uMousePos);
+  
+  // Create final color with chromatic aberration
+  vec4 refractedColor = vec4(r, g, b, 1.0);
+  
+  // Apply shadow
+  vec3 shadowColor = vec3(0.0, 0.0, 0.0); // Black shadow
+  refractedColor.rgb = mix(refractedColor.rgb, shadowColor, shadow);
+  
   float op = smoothstep(0.0, 0.0025, -sd);
-  return mix(bg, r, op);
+  return mix(bg, refractedColor, op);
 }
 
 vec4 getEffect(vec2 st, vec4 bg, vec2 originalUV) {
