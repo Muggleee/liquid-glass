@@ -43,7 +43,8 @@ import {
   createTexture,
   createGradientCanvas,
   createMaskCanvas,
-  resizeCanvas
+  resizeCanvas,
+  loadDefaultBackgroundImage
 } from '../utils/webgl.js'
 
 const canvasRef = ref(null)
@@ -157,10 +158,20 @@ function setupGeometry() {
   gl.vertexAttribPointer(uvLoc, 2, gl.FLOAT, false, 5 * 4, 3 * 4)
 }
 
-function setupTextures() {
-  // Create background texture
-  const bgCanvas = createGradientCanvas()
-  createTexture(gl, 0, bgCanvas)
+async function setupTextures() {
+  try {
+    // Create background texture with default image
+    const bgImage = await loadDefaultBackgroundImage()
+    createTexture(gl, 0, bgImage)
+    
+    // Update texture resolution
+    textureResolution.width = bgImage.width || 512
+    textureResolution.height = bgImage.height || 512
+  } catch (error) {
+    console.error('Error loading default background:', error)
+    const bgCanvas = createGradientCanvas()
+    createTexture(gl, 0, bgCanvas)
+  }
 
   // Create mask texture
   const maskCanvas = createMaskCanvas()

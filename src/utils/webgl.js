@@ -52,6 +52,19 @@ export function createGradientCanvas() {
   return canvas
 }
 
+export function loadDefaultBackgroundImage() {
+  return new Promise((resolve, reject) => {
+    const img = new Image()
+    img.crossOrigin = 'anonymous'
+    img.onload = () => resolve(img)
+    img.onerror = () => {
+      console.warn('Failed to load default background image, falling back to gradient')
+      resolve(createGradientCanvas())
+    }
+    img.src = 'https://plus.unsplash.com/premium_photo-1677094766116-aa0f8742d36b?q=80&w=3087&auto=format&fit=crop&ixlib=rb-4.1.0&ixid=M3wxMjA3fDB8MHxwaG90by1wYWdlfHx8fGVufDB8fHx8fA%3D%3D'
+  })
+}
+
 export function createMaskCanvas() {
   const canvas = document.createElement('canvas')
   canvas.width = canvas.height = 512
