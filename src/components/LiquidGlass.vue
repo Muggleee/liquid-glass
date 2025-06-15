@@ -58,7 +58,7 @@ let textureResolution = { width: 512, height: 512 } // Default texture resolutio
 // Reactive parameters
 const params = reactive({
   radius: 0.4,
-  distort: 3.5,
+  distort: 2.5,
   dispersion: 1.3,
   rotSpeed: 1.0,
   shadowIntensity: 0.3,
