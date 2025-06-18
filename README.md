@@ -2,7 +2,7 @@
 
 [English](#english) | [中文](#中文)
 
-**🌐 Live Demo: [http://liquid-glass.liziyang.design](http://liquid-glass.liziyang.design)**
+**🌐 Live Demo: [[http://liquid-glass.liziyang.design](https://liquid-glass.liziyang.design?utm_source=github&utm_medium=readme)]**
 
 ---
 
