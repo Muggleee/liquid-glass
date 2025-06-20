@@ -41,10 +41,8 @@ vec2 getAspectCorrectedUV(vec2 uv, out bool isOutOfBounds) {
   vec2 scale = vec2(1.0);
   
   if (textureAspect > screenAspect) {
-    // Image is wider than screen - fit to screen width, letterbox top/bottom
     scale.y = textureAspect / screenAspect;
   } else {
-    // Image is taller than screen - fit to screen height, letterbox left/right
     scale.x = screenAspect / textureAspect;
   }
   
@@ -98,21 +96,18 @@ float getShadow(vec2 uv, vec2 lightPos) {
 
 // Calculate highlight effect
 float getHighlight(vec2 uv, vec2 lightPos) {
-  // Use independent X and Y offsets for highlight
+  
   vec2 highlightOffset = vec2(uHighlightOffsetX, uHighlightOffsetY);
   vec2 highlightPos = uv - lightPos + highlightOffset;
   
-  // Calculate distance field for highlight area
   vec2 asp = vec2(uResolution.x / uResolution.y, 1.0);
   vec2 st = highlightPos * asp;
   st *= 1.0 / (0.4920 + 0.2);
   st = rot(-uRotSpeed * 2.0 * PI) * st;
-  
-  // Create smaller highlight circle
+ 
   float highlightRadius = uRadius * uHighlightSize;
   float highlightDist = sdCircle(st, highlightRadius);
   
-  // Create soft highlight with smooth edges
   float highlight = 1.0 - smoothstep(-0.02, 0.02, highlightDist);
   
   // Add falloff from center for more realistic glass highlight
@@ -120,7 +115,7 @@ float getHighlight(vec2 uv, vec2 lightPos) {
   float centerFalloff = 1.0 - smoothstep(0.0, highlightRadius * 0.8, centerDist);
   highlight *= centerFalloff;
   
-  // Distance attenuation
+
   float distanceFromLight = length(uv - lightPos);
   float attenuation = 1.0 - smoothstep(0.0, 1.0, distanceFromLight);
   
@@ -132,9 +127,9 @@ vec4 refrakt(float sd, vec2 st, vec4 bg, vec2 originalUV) {
   float disp = uDispersion * 0.01;
   
   // Create different offsets for each color channel to simulate chromatic aberration
-  vec2 redOffset = offset * disp * 1.2; // Red shifts more
-  vec2 greenOffset = offset * disp * 1.0; // Green shifts standard amount
-  vec2 blueOffset = offset * disp * 0.8; // Blue shifts less
+  vec2 redOffset = offset * disp * 1.2; 
+  vec2 greenOffset = offset * disp * 1.0; 
+  vec2 blueOffset = offset * disp * 0.8; 
   
   // Sample each color channel with different refraction amounts
   bool isOutOfBoundsR, isOutOfBoundsG, isOutOfBoundsB;
@@ -147,23 +142,22 @@ vec4 refrakt(float sd, vec2 st, vec4 bg, vec2 originalUV) {
   vec2 aspectCorrectedGreenUV = getAspectCorrectedUV(greenUV, isOutOfBoundsG);
   vec2 aspectCorrectedBlueUV = getAspectCorrectedUV(blueUV, isOutOfBoundsB);
   
-  // Sample texture for each color channel
   float r, g, b;
   
   if (isOutOfBoundsR) {
-    r = 0.8; // Light gray for out-of-bounds
+    r = 0.8;
   } else {
     r = texture(uTexture, aspectCorrectedRedUV).r;
   }
   
   if (isOutOfBoundsG) {
-    g = 0.8; // Light gray for out-of-bounds
+    g = 0.8;
   } else {
     g = texture(uTexture, aspectCorrectedGreenUV).g;
   }
   
   if (isOutOfBoundsB) {
-    b = 0.8; // Light gray for out-of-bounds
+    b = 0.8;
   } else {
     b = texture(uTexture, aspectCorrectedBlueUV).b;
   }
@@ -201,15 +195,14 @@ void main() {
   
   vec4 bg;
   if (isOutOfBounds) {
-    // Use a neutral background color for letterbox areas
-    bg = vec4(0.8, 0.8, 0.8, 1.0); // Light gray background
+    bg = vec4(0.8, 0.8, 0.8, 1.0);
   } else {
     bg = texture(uTexture, aspectCorrectedUV);
   }
   
   // Calculate shadow and apply to background
   float shadow = getShadow(uv, uMousePos);
-  vec3 shadowColor = vec3(0.0, 0.0, 0.0); // Black shadow
+  vec3 shadowColor = vec3(0.0, 0.0, 0.0); 
   bg.rgb = mix(bg.rgb, shadowColor, shadow);
   
   vec2 st = uv - uMousePos;
@@ -219,7 +212,6 @@ void main() {
   
   vec4 color = getEffect(st, bg, uv);
   
-  // Add realistic highlight effect - simulate exposure increase instead of adding white
   float highlight = getHighlight(uv, uMousePos);
   
   // Method 1: Exposure-based highlight (preserves color ratios)
@@ -233,7 +225,7 @@ void main() {
   color.rgb = mix(exposedColor, brightenedColor, 0.3);
   
   // Add subtle warm tint to simulate realistic light reflection
-  vec3 warmTint = vec3(1.02, 1.01, 0.98); // Slightly warm
+  vec3 warmTint = vec3(1.02, 1.01, 0.98); 
   color.rgb *= mix(vec3(1.0), warmTint, highlight * 0.3);
   
   vec4 m = texture(uMaskTexture, uv);
